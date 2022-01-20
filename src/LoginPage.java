@@ -11,12 +11,13 @@ import javax.swing.*;
  *  	https://beginnersbook.com/2015/07/java-swing-tutorial/  - (Simple login screen for beginners)
  */
 public class LoginPage extends JFrame implements ActionListener {
-
+	private String encryptedUser;
 	private static JTextField userNameText, userPassText;
 	private static JButton login, createUser;
 	private static JLabel correctLogin;
 	private JFrame loginFrame = new JFrame("User Login");
 	private JPanel loginPanel = new JPanel();
+	private JButton back;
 
 	private char key = 'P';
 
@@ -29,30 +30,19 @@ public class LoginPage extends JFrame implements ActionListener {
 	 * @return: the encrypted/decrypted string
 	 */
 	
-	public String Xorcrypt(char key, String plaintext) {
+	public String Xorcrypt(char key, String message) {
 		char xorKey = key;
 		String outputString = "";
-		int len = plaintext.length();
+		int len = message.length();
 
 		for (int i = 0; i < len; i++) {
-			outputString = outputString + Character.toString((char) plaintext.charAt(i) ^ xorKey);
+			outputString = outputString + Character.toString((char) message.charAt(i) ^ xorKey);
 		}
 
 		return outputString;
 	}
 
 	public LoginPage() {
-
-		loginPanel.setBackground(Color.WHITE);
-
-		loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // just hide the frame
-
-		loginFrame.pack();
-		loginFrame.setSize(950, 500); // set size of screen
-		loginFrame.setLocationRelativeTo(null); // screen will be in middle
-
-		loginPanel.setLayout(null); // no defined setLayout
-		loginFrame.add(loginPanel); // adds panel onto frame
 
 		JLabel loginTitle = new JLabel("Login to Student Manager", JLabel.CENTER); // label
 		loginTitle.setFont(new Font("Ariel", Font.BOLD, 35)); // font type and size
@@ -95,15 +85,14 @@ public class LoginPage extends JFrame implements ActionListener {
 				"*To create a new account enter a user name and a password then press the Create User button");
 		createUser.setBounds(50, 400, 600, 30);
 		loginPanel.add(createUser);
-
-		loginFrame.setVisible(true);
+		
 	}
 
 	
 	// buttons events if clicked
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 		try {
 
 			// create bufferedWriter to write to user/pass files
@@ -117,6 +106,10 @@ public class LoginPage extends JFrame implements ActionListener {
 			boolean sameUser = false;
 			String line1, line2, line3;
 
+			// changed two lines - global within this section?
+			// this way is able to check if encrypted user is same as already stored(encrypted user)
+			String newEncryptedUser = Xorcrypt(key, userNameText.getText());
+			
 			if (e.getSource() == createUser) {
 
 				if ((userNameText.getText().equals("") || userPassText.getText().equals(""))) // if no info in text
@@ -130,7 +123,7 @@ public class LoginPage extends JFrame implements ActionListener {
 
 					while ((line3 = readUsers.readLine()) != null) // goes through username file
 					{
-						if (line3.equals(userNameText.getText())) // if line is same as the entered username
+						if (line3.equals(newEncryptedUser)) // if line is same as the entered (encrypted) username
 						{
 							sameUser = true;
 							break; // escape loop
@@ -144,13 +137,12 @@ public class LoginPage extends JFrame implements ActionListener {
 
 					else if (sameUser == false) // writing
 					{
-						String newEncryptedUser = Xorcrypt(key, userNameText.getText());
+
 						String newEncryptedPass = Xorcrypt(key, userPassText.getText());
 
 						userNames.write(newEncryptedUser); // inputs the username in the username text file
 						passwords.write(newEncryptedPass); // inputs the password in the password text file
-						
-						
+
 						userNames.newLine();
 						passwords.newLine();
 
@@ -185,7 +177,7 @@ public class LoginPage extends JFrame implements ActionListener {
 					while ((line1 = readUsers.readLine()) != null) // goes through username file
 					{
 						count1 += 1; // count 1 for each line read through
-						String encryptedUser = Xorcrypt(key, userNameText.getText());
+						encryptedUser = Xorcrypt(key, userNameText.getText());
 						if (line1.equals(encryptedUser)) // if line is same as the entered username
 						{
 							user = true; // user = true
@@ -214,14 +206,21 @@ public class LoginPage extends JFrame implements ActionListener {
 					{
 						correctLogin.setText("Correct Login Information"); // logged in
 						correctLogin.setForeground(Color.green);
-												
-						MenuPage menuPage = new MenuPage();
-						menuPage.runMenuPage();
-						loginFrame.dispose();
+						
+						MenuPage frame = new MenuPage("Menu Page", encryptedUser );
+					    frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+					    frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+					    frame.pack();
+					    frame.setSize( 950, 500 );
+					    frame.setLocationRelativeTo(null);    
+					    frame.setVisible( true );
+					    loginFrame.dispose();
+					    
 
 					}
 
-					else {
+					else 
+					{
 						System.out.println(count1 + "is not equal to " + count2); // not logged in
 						correctLogin.setText("Incorrect Login Information");
 						correctLogin.setForeground(Color.red);
@@ -232,7 +231,7 @@ public class LoginPage extends JFrame implements ActionListener {
 				}
 			}
 
-			// close BufferedReaders and BufferedWriters
+			// closes BufferedReaders and BufferedWriters
 			userNames.close();
 			passwords.close();
 			readUsers.close();
@@ -243,5 +242,23 @@ public class LoginPage extends JFrame implements ActionListener {
 		{
 			System.out.println("Error " + err.getMessage()); // prints error
 		}
+	}
+
+	public void loadLoginPage() {
+		
+
+		loginPanel.setBackground(Color.WHITE);
+
+		loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // just hide the frame
+
+		loginFrame.pack();
+		loginFrame.setSize(950, 500); // set size of screen
+		loginFrame.setLocationRelativeTo(null); // screen will be in middle
+
+		loginPanel.setLayout(null); // no defined setLayout
+		loginFrame.add(loginPanel); // adds panel onto frame
+		
+		loginFrame.setVisible(true);
+
 	}
 }

@@ -13,8 +13,8 @@ import java.util.*;
  *
  */
 public class Student extends Person {
-	protected int id;
-	protected int grade;
+	protected String id;
+	protected String grade;
 	protected ArrayList<Double> marks = new ArrayList<Double>();
 	protected ArrayList<Boolean> presence = new ArrayList<Boolean>();
 
@@ -24,13 +24,11 @@ public class Student extends Person {
 	 * @param name: The name of the student:
 	 * @param address: The address of the student
 	 */
-	public Student(int id, int grade, String name, String address) {
-		this.id = id;
-		this.grade = grade;
+	public Student(String studentarr, String studentarr2, String name, String address) {
+		this.id = studentarr;
+		this.grade = studentarr2;
 		this.name = name;
 		this.address = address;
-	
-		
 		
 	}
 
@@ -92,7 +90,6 @@ public class Student extends Person {
     public String toString() {
         return "Student's name : " + name;
     }
-	
-	
 
 }
+

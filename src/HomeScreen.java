@@ -73,6 +73,7 @@ class MyFrame extends JFrame implements ActionListener // adds JLabels to home s
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnStart) {
 			LoginPage loginPage = new LoginPage();
+			loginPage.loadLoginPage();
 			this.dispose();
 			
 		}
@@ -87,8 +88,6 @@ public class HomeScreen {
 		
 		MyFrame frame = new MyFrame();
 		frame.setVisible(true);
-	
-
 	}
 
 	/**
@@ -134,3 +133,4 @@ public class HomeScreen {
 	}
 
 }
+

@@ -26,19 +26,25 @@ public class Teacher extends Person {
 	/**
 	 * @return specialty
 	 */
+	
+	public String getName()
+	{
+		return this.name;
+	}
+	
 	public String getSpecialty() {
-		return specialty;
+		return this.specialty;
 	}
 
 	/**
 	 * @return phoneNumber
 	 */
 	public String getPhoneNumber() {
-		return phoneNumber;
+		return this.phoneNumber;
 	}
 	
     @Override
     public String toString() {
-        return "Name of the Teacher: " + name;
+        return "Name of the Teacher: " + getName();
     }
 }

@@ -34,7 +34,7 @@ public class Person {
 		int len = message.length();
 		
 		for(int i = 0; i < len; i++) {
-			outputString = outputString + Character.toString((char)message.charAt(i) ^ xorKey);
+			outputString = outputString + Character.toString((char) ((char)message.charAt(i) ^ xorKey));
 		}
 		
 		return outputString;
